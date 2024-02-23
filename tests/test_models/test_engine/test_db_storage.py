@@ -14,6 +14,7 @@ from models.place import Place
 from models.review import Review
 from models.state import State
 from models.user import User
+from models import storage
 import json
 import os
 import pep8
@@ -66,6 +67,20 @@ test_db_storage.py'])
                              "{:s} method needs a docstring".format(func[0]))
             self.assertTrue(len(func[1].__doc__) >= 1,
                             "{:s} method needs a docstring".format(func[0]))
+
+    def test_dbs_get(self):
+        """Test for db storage get method."""
+
+        city = City(name="Lagos")
+        city.save()
+        result = storage.get(City, city.id)
+        self.assertEqual(type(result), City)
+
+    def test_dbs_count(self):
+        """ Test for db storage count method."""
+
+        self.assertEqual(type(storage.count(City)), int)
+        self.assertEqual(type(storage.count(), int))
 
 
 class TestFileStorage(unittest.TestCase):

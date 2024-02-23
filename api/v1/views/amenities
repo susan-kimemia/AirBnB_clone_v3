@@ -1,0 +1,54 @@
+#!/usr/bin/python3
+
+"""
+Defines Amenity resource blueprint.
+"""
+from api.v1.views import app_views
+from flask import jsonify, request, abort, make_response
+from models import storage
+from models.amenity import Amenity
+
+
+@app_views.route('/amenities', strict_slashes=False,
+                 methods=['GET', 'POST'])
+@app_views.route('/amenities/<amenity_id>', strict_slashes=False,
+                 methods=['GET', 'DELETE', 'PUT'])
+def amenities(amenity_id=None):
+    """Retrieves Amenity resources."""
+
+    amenities = storage.all(Amenity)
+    if amenity_id:
+        if 'Amenity.' + amenity_id not in amenities:
+            abort(404)
+
+        amenity = amenities['Amenity.' + amenity_id]
+        if request.method == 'GET':
+            return jsonify(amenity.to_dict())
+        elif request.method == 'DELETE':
+            storage.delete(amenity)
+            storage.save()
+            return jsonify({}), 200
+        elif request.method == 'PUT':
+            if not request.get_json():
+                return jsonify({"error": "Not a JSON"}), 400
+            for attribute in request.get_json():
+                if attribute not in ('id', 'updated_at', 'created_at'):
+                    setattr(amenity, attribute, request.get_json()[attribute])
+            storage.save()
+            return jsonify(amenity.to_dict())
+
+    # list of all Amenity objects
+    if request.method == 'GET':
+        amenities = [amenity.to_dict() for amenity in amenities.values()]
+        return jsonify(amenities)
+    elif request.method == 'POST':
+        if not request.get_json():
+            return jsonify({"error": "Not a JSON"}), 400
+        elif 'name' not in request.get_json():
+            return jsonify({"error": "Missing name"}), 400
+        amenity = Amenity(name=request.get_json()['name'])
+        for attribute in request.get_json():
+            if attribute not in ('id', 'updated_at', 'created_at'):
+                setattr(amenity, attribute, request.get_json()[attribute])
+                amenity.save()
+        return jsonify(amenity.to_dict()), 201
