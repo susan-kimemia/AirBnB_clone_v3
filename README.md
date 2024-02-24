@@ -156,7 +156,9 @@ No known bugs at this time.
 ## Authors
 Alexa Orrico - [Github](https://github.com/alexaorrico) / [Twitter](https://twitter.com/alexa_orrico)  
 Jennifer Huang - [Github](https://github.com/jhuang10123) / [Twitter](https://twitter.com/earthtojhuang)
+
 Susan Kimemia - [Github](https://github.com/susan-kimemia) / [Twitter](https://twitter.com/susanKm_)
+
 Levince Otieno - [Github](https://github.com/levinceotieno) / [Twitter](https://twitter.com/safetynet_now)
 
 Second part of Airbnb: Joann Vuong
