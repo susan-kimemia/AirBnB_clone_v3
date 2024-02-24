@@ -80,7 +80,7 @@ test_db_storage.py'])
         """ Test for db storage count method."""
 
         self.assertEqual(type(storage.count(City)), int)
-        self.assertEqual(type(storage.count()), int)
+        self.assertEqual(type(storage.count(), int))
 
 
 class TestFileStorage(unittest.TestCase):
