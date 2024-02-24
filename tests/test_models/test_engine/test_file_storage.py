@@ -122,7 +122,7 @@ class TestFileStorage(unittest.TestCase):
         storage.new(state)
         storage.save()
 
-        self.assertIsInstance(storage.get(State, state.id), State)
+        self.assertEqual(storage.get(State, state.id), State)
 
     def test_count(self):
         """ Test for Count method. """
