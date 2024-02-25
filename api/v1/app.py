@@ -1,41 +1,32 @@
 #!/usr/bin/python3
-"""It is time to start your API!"""
-from flask import Flask, jsonify, make_response
-from models import *
+""""
+This module contains the principal application
+"""
 from models import storage
 from api.v1.views import app_views
-from flask import Blueprint
-import os
+from flask import Flask, make_response, jsonify
+from os import getenv
 from flask_cors import CORS
 
 app = Flask(__name__)
-
-cors = CORS(app, resources={r'/*': {"origins": "0.0.0.0"}})
-
-"""Registering the blue print of appviews"""
-app.register_blueprint(app_views, url_prefix='/api/v1')
-
-
-@app.errorhandler(404)
-def not_found_error(error):
-    """
-    a handler for 404 errors that returns a
-    JSON-formatted 404 status code response
-    """
-    return jsonify({"error": "Not found"}), 404
+app.register_blueprint(app_views)
+cors = CORS(app, resources={r"/api/*": {"origins": "0.0.0.0"}})
 
 
 @app.teardown_appcontext
-def teardown_appcontext(exception):
-    """
-    declare a method to handle
-    @app.teardown_appcontext that calls storage.close()
-    """
+def close_db(obj):
+    """ calls methods close() """
     storage.close()
 
 
-if __name__ == '__main__':
-    """get the host env variable or use default"""
-    host = os.environ.get('HBNB_API_HOST', '0.0.0.0')
-    port = int(os.environ.get('HBNB_API_PORT', 5000))
-    app.run(host=host, port=port, threaded=True)
+@app.errorhandler(404)
+def page_not_found(error):
+    """Loads a custom 404 page not found"""
+    return make_response(jsonify({"error": "Not found"}), 404)
+
+
+if __name__ == "__main__":
+    host = getenv('HBNB_API_HOST', default='0.0.0.0')
+    port = getenv('HBNB_API_PORT', default=5000)
+
+    app.run(host, int(port), threaded=True)
